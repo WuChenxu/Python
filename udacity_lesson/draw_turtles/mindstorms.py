@@ -34,7 +34,7 @@ def draw_flower():
     window = turtle.Screen()
     draw_playground(window)
     brad = turtle.Turtle()
-    brad.speed(20)
+    brad.speed(2)
     brad.color("green")
     brad.shape("turtle")
     brad.shapesize(1,1,1)
