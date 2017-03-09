@@ -1,0 +1,5 @@
+print("{}.Hello.".format(1))
+print("{0}, this is {1}. {1}, this is {0}.".format("Hellen", "Tom"))
+print("{subject} {verb} {object}".format(object="the lazy dog", subject="the quick brown fox", verb="jumps over"))
+print("{:04}".format(42))
+print("{} of {:b} people know binary, the other haf don't".format(1,2))
