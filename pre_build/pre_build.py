@@ -7,41 +7,41 @@ import datetime
 import re
 
 
-target = ['SCL', 'TRPC', 'VLC']
-blacklist = {'j0':'j_0', 'j1': 'j_1'}
-remove_file_list = ['^_.*', '.*\.mk$', '.*\.bat$']
-comment_pattern = '^.*#include.*\"\_.*.h\"'
+TARGET_FOLDER = ['SCL', 'TRPC', 'VLC']
+BLACKLIST = {'j0':'j_0', 'j1': 'j_1'}
+REMOVE_FILE_LIST = ['^_.*', r'.*\.mk$', r'.*\.bat$']
+COMMENT_PATTERN = r'^#include.*\"\_.*.h\"'
 
-def replace_var_in_blacklist(file, blacklist):
+def replace_var_in_blacklist(filename, blacklist):
     '''replace the variable name in blacklist'''
 
-    #print_log("->Handling "+str(file))
+    #print_log("->Handling "+str(filename))
 
-    with open(file, 'r+') as f:
-        code = f.read()
-        f.seek(0, 0)
-        tansformedCode = code
+    with open(filename, 'r+') as file:
+        code = file.read()
+        file.seek(0, 0)
+        tansformed_code = code
         for pattern, replace in blacklist.items():
             #print(f"b:{pattern},  w:{replace}")
-            tansformedCode = re.sub(pattern, replace, tansformedCode) 
+            tansformed_code = re.sub(pattern, replace, tansformed_code)
         #print("====>", replacedStr)
-        if tansformedCode != code:
+        if tansformed_code != code:
             print_log("|-->transformed.")
         else:
             print_log("|-->No update.")
-        f.write(tansformedCode)
+        file.write(tansformed_code)
 
 
-def comment_statement(file):
-    with open(file, 'r+') as f:
-        code = f.readlines()
-        f.seek(0, 0)
+def comment_statement(filename):
+    with open(filename, 'r+') as file:
+        code = file.readlines()
+        file.seek(0, 0)
         for line in code:
-            if re.search(comment_pattern, line):
+            if re.search(COMMENT_PATTERN, line):
                 print("line ", line, "matched")
-                f.write("//")
-            f.write(line)
-        #f.write(tansformedCode)
+                file.write("//")
+            file.write(line)
+
 
 def print_log(*args):
     print(datetime.datetime.now(), end=' ')
@@ -52,33 +52,28 @@ def print_log(*args):
 
 def delete_files():
     list_dirs = os.walk('./')
-    for root, dirs, files in list_dirs:
-        for f in files:
-            print_log("-> "+os.path.join(root, f))
-            file_deleted = False
-            for pattern in remove_file_list:
-                if re.search(pattern, f):
-                    file_deleted = True
-                    os.remove(os.path.join(root, f))
+    for root, _, files in list_dirs:
+        for file in files:
+            print_log("-> "+os.path.join(root, file))
+            for pattern in REMOVE_FILE_LIST:
+                if re.search(pattern, file):
+                    os.remove(os.path.join(root, file))
                     print_log("->>> file removed.")
                     break
 
 def edit_files():
     list_dirs = os.walk('./')
-    for root, dirs, files in list_dirs:
-        for f in files:
-            print_log("-> "+os.path.join(root, f))
-            file_suffix = os.path.splitext(f)[1]
+    for root, _, files in list_dirs:
+        for file in files:
+            print_log("-> "+os.path.join(root, file))
+            file_suffix = os.path.splitext(file)[1]
             #print(f"suffix: {file_suffix}")
             if file_suffix == '.c' or file_suffix == '.h':
-                replace_var_in_blacklist(os.path.join(root, f), blacklist) 
-                comment_statement(os.path.join(root, f)) 
+                replace_var_in_blacklist(os.path.join(root, file), BLACKLIST)
+                comment_statement(os.path.join(root, file))
 
-print("===========step1: delete files===========")
-delete_files()
-print("===========step2: replace word in balcklist===========")
-edit_files()
-
-
-
-
+if __name__ == '__main__':
+    print("===========step1: delete files===========")
+    delete_files()
+    print("===========step2: replace word in balcklist===========")
+    edit_files()
