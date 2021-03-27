@@ -11,6 +11,8 @@ image = mpimg.imread('test.jpg')
 ysize = image.shape[0]
 xsize = image.shape[1]
 color_select = np.copy(image)
+plt.imshow(image)
+plt.show()
 
 # Define color selection criteria
 ###### MODIFY THESE VARIABLES TO MAKE YOUR COLOR SELECTION
