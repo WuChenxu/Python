@@ -19,6 +19,8 @@ $ar -x mylib.a
 $gcc -shared -fPIC *.o -o mylib.so
 ```
 
+# how to call C API
+call_c_func.py
 
 
 reference:
